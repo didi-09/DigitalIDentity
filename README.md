@@ -76,3 +76,191 @@ The project utilizes the following technologies:
     *   npm (Node Package Manager): For managing project dependencies.
     *   Code Editor: Visual Studio Code (VS Code) is recommended with Solidity
       and JavaScript extensions.
+      
+--------------------------------------------------------------------------------
+2. ARCHITECTURE
+--------------------------------------------------------------------------------
+
+2.1. System Components Diagram
+-----------------------------
+(While a visual diagram would be ideal here, this textual description outlines
+the components and their interactions. In a formal document, a flowchart or
+component diagram would be inserted.)
+
+   +-----------------+      +-----------------+      +----------------------+
+   |  User's Browser |----->|    Frontend     |<---->|  MetaMask Extension  |
+   | (HTML/CSS/JS)   |      | (Vite, Ethers.js)|      | (Wallet, Signer)     |
+   +-----------------+      +-----------------+      +----------+-----------+
+                                    ^                             |
+                                    | (RPC Calls)                 | (Signed Tx)
+                                    |                             |
+                                    v                             v
+                             +-------------------------------------+
+                             |    Ganache Local Blockchain         |
+                             | (Ethereum Node, EVM)                |
+                             |      +--------------------------+   |
+                             |      | DigitalIdentity Contract |   |
+                             |      | (Solidity: State, Logic) |   |
+                             |      +--------------------------+   |
+                             +-------------------------------------+
+                                    ^
+                                    | (Deploy, Interact via CLI)
+                                    |
+                             +-----------------+
+                             | Truffle Suite   |
+                             | (Compile,Migrate|
+                             | Test)           |
+                             +-----------------+
+
+2.2. Detailed Component Description
+------------------------------------
+
+*   **User's Browser:**
+    *   **Role:** Hosts the frontend application and the MetaMask extension.
+    *   **Interaction:** Renders the HTML/CSS and executes the JavaScript logic
+      of the frontend. Facilitates user input and displays DApp information.
+
+*   **Frontend Application (`digital-identity-frontend-truffle`):**
+    *   **Role:** Provides the User Interface (UI) and User Experience (UX) for
+      interacting with the digital identity system.
+    *   **Technologies:** Built with HTML, CSS, and modern JavaScript. Vite is
+      used as a development server and build tool.
+    *   **Functionality:**
+        *   Renders forms for identity registration and updates.
+        *   Displays identity information and system status/errors.
+        *   Manages user interactions (button clicks, form submissions).
+        *   Uses Ethers.js to communicate with the MetaMask extension and,
+          through it, the blockchain.
+
+*   **MetaMask Browser Extension:**
+    *   **Role:** Acts as the bridge between the frontend application and the
+      Ethereum blockchain (Ganache in this case). It also serves as the user's
+      digital wallet.
+    *   **Functionality:**
+        *   Manages the user's Ethereum accounts and private keys securely.
+        *   Injects an Ethereum provider (`window.ethereum`) into the browser,
+          which Ethers.js uses to detect the wallet and network.
+        *   Prompts the user to approve or reject transactions initiated by the
+          frontend.
+        *   Signs transactions with the user's private key before they are
+          broadcast to the network.
+        *   Allows users to switch between different Ethereum networks.
+
+*   **Ethers.js Library:**
+    *   **Role:** A comprehensive JavaScript library for interacting with the
+      Ethereum blockchain and its ecosystem.
+    *   **Usage in Frontend:**
+        *   Creating a `Provider` to connect to the Ethereum network via
+          MetaMask.
+        *   Getting a `Signer` object to represent the user's connected account,
+          enabling transaction signing.
+        *   Instantiating a `Contract` object using the smart contract's ABI
+          and deployed address, allowing for easy interaction with contract
+          functions.
+        *   Formatting data and handling responses from the blockchain.
+
+*   **Ganache (Local Blockchain):**
+    *   **Role:** A personal Ethereum blockchain for local development and
+      testing.
+    *   **Functionality:**
+        *   Simulates the Ethereum Virtual Machine (EVM) environment.
+        *   Provides a set of pre-funded test accounts with "fake" ETH.
+        *   Processes transactions and executes smart contract code locally,
+          allowing for rapid iteration without real gas costs.
+        *   Offers an RPC (Remote Procedure Call) endpoint (e.g.,
+          `http://127.0.0.1:7545`) for applications like MetaMask and Truffle to
+          connect to.
+        *   Ganache UI provides a graphical interface to inspect blocks,
+          transactions, accounts, and contract state.
+
+*   **DigitalIdentity Smart Contract (`DigitalIdentity.sol`):**
+    *   **Role:** The backend logic and data store of the DApp, deployed on the
+      Ganache blockchain.
+    *   **Functionality:**
+        *   Defines the data structure (`Identity` struct) for storing user
+          identities.
+        *   Implements functions for `registerIdentity`, `updateIdentity`, and
+          `getIdentity`.
+        *   Manages state variables (the `identities` mapping).
+        *   Enforces business rules (e.g., one identity per address, owner-only
+          updates) using modifiers and `require` statements.
+        *   Emits events for significant actions.
+
+*   **Truffle Suite:**
+    *   **Role:** A development environment, testing framework, and asset pipeline
+      for Ethereum smart contracts.
+    *   **Functionality:**
+        *   **Compilation:** Compiles Solidity (`.sol`) smart contracts into EVM
+          bytecode and generates Application Binary Interfaces (ABIs).
+        *   **Migration (Deployment):** Provides a system for scripting
+          deployments of smart contracts to various Ethereum networks (including
+          Ganache).
+        *   **Testing:** Facilitates writing automated tests for smart contracts
+          in JavaScript or Solidity.
+        *   **Artifact Management:** Stores compiled contract information (ABI,
+          bytecode, deployed addresses) in `build/contracts/` JSON files.
+
+2.3. Data and Control Flow
+---------------------------
+
+*   **User Connecting Wallet:**
+    1.  User clicks "Connect Wallet" on the frontend.
+    2.  Frontend (`main.js`) calls `provider.send("eth_requestAccounts", [])` via
+        Ethers.js.
+    3.  MetaMask prompts the user to select an account and approve the
+        connection.
+    4.  If approved, MetaMask provides the selected account address to the
+        frontend.
+    5.  Frontend updates the UI and initializes the Ethers.js `Signer` and
+        `Contract` objects.
+
+*   **Registering/Updating an Identity (Write Operation):**
+    1.  User fills the form and clicks "Register" or "Update".
+    2.  Frontend gathers input data.
+    3.  Frontend calls the corresponding smart contract function (e.g.,
+        `contract.registerIdentity(name, email)`) using the Ethers.js `Contract`
+        object (which uses the `Signer`).
+    4.  Ethers.js prepares the transaction data.
+    5.  MetaMask pops up, displaying transaction details (including estimated gas)
+        and prompts the user for confirmation.
+    6.  User confirms and signs the transaction in MetaMask.
+    7.  MetaMask submits the signed transaction to the connected Ganache RPC
+        endpoint.
+    8.  Ganache receives the transaction, validates it, and includes it in a new
+        block (if valid).
+    9.  The `DigitalIdentity` smart contract function is executed by the EVM on
+        Ganache, potentially changing the contract's state (e.g., adding/updating
+        an entry in the `identities` mapping).
+    10. The smart contract may emit an event (e.g., `IdentityRegistered`).
+    11. Frontend receives a transaction hash and can `await tx.wait()` for
+        confirmation that the transaction has been mined.
+    12. Frontend updates the UI to reflect the success or failure.
+
+*   **Viewing an Identity (Read Operation):**
+    1.  User enters an Ethereum address and clicks "View Identity".
+    2.  Frontend calls the `contract.getIdentity(addressToView)` function using the
+        Ethers.js `Contract` object (can use a `Provider` or `Signer` for read
+        calls).
+    3.  Ethers.js sends a JSON-RPC `eth_call` request to the Ganache RPC endpoint
+        (via MetaMask's provider).
+    4.  Ganache executes the `getIdentity` view function locally (without creating
+        a new transaction or block) and returns the requested data.
+    5.  Frontend receives the identity data (name, email, registration status).
+    6.  Frontend updates the UI to display the information.
+
+*   **Smart Contract Deployment (via Truffle):**
+    1.  Developer runs `truffle compile`. Truffle compiles `DigitalIdentity.sol`
+        into bytecode and ABI, saving them in `build/contracts/`.
+    2.  Developer runs `truffle migrate --network <ganache_network_name>`.
+    3.  Truffle reads the migration script (e.g.,
+        `2_deploy_digital_identity.js`).
+    4.  Truffle connects to the Ganache instance specified in
+        `truffle-config.js`.
+    5.  Truffle sends a transaction to Ganache to deploy the `DigitalIdentity`
+        contract bytecode.
+    6.  Ganache creates the contract on its blockchain and returns the contract
+        address.
+    7.  Truffle records the deployment and updates the artifact JSON file in
+        `build/contracts/` with the deployed address on that network.
+
+    
