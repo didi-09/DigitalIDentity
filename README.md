@@ -1,6 +1,6 @@
-================================================================================
+
 Project Documentation: Decentralized Digital Identity Management System
-================================================================================
+
 
 Version: 1.1
 Date: May 16, 2024 (Update with your actual date)
