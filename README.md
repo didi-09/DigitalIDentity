@@ -269,73 +269,171 @@ component diagram would be inserted.)
 3.1. File Location and Purpose
 -------------------------------
 *   **File Path:** `truffle-digital-identity/contracts/DigitalIdentity.sol`
-*   **Purpose:** This Solidity smart contract serves as the core backend logic
-    for the Digital Identity DApp. It is responsible for securely storing and
-    managing user identity data (name and email) on the blockchain, associating
-    it with unique Ethereum addresses. It defines the rules and interfaces for
-    registering, updating, and retrieving these identities.
+*   **Purpose:** This Solidity smart contract forms the backend logic of the DApp. It manages user identity data (name, email) on the blockchain, linking it to Ethereum addresses, and defines the rules for interaction.
 
 3.2. Compiler Directives
 -------------------------
     3.2.1. SPDX License Identifier
-    ```solidity
-    // SPDX-License-Identifier: MIT
-    ```
-    *   **Description:** Declares the open-source license under which the contract's
-        source code is distributed. `MIT` is a common and permissive license.
-        This is a best practice for transparency and legal clarity.
+        ```solidity
+        // SPDX-License-Identifier: MIT
+        ```
+        *   **Purpose:** Specifies the open-source license (MIT License) for the contract code.
 
     3.2.2. Pragma Version
-    ```solidity
-    pragma solidity ^0.8.18;
-    ```
-    
-    *   **Description:** Specifies the Solidity compiler version(s) compatible with
-        this contract code. The caret `^` indicates that the contract can be
-        compiled with version 0.8.18 and any subsequent patch versions (e.g.,
-        0.8.19) but not with breaking changes introduced in version 0.9.0 or
-        higher. This ensures code stability and prevents compilation errors due
-        to compiler updates.
+        ```solidity
+        pragma solidity ^0.8.18;
+        ```
+        *   **Purpose:** Declares compiler version compatibility (0.8.18 and compatible patch versions).
 
 3.3. Contract Definition
 -------------------------
-```solidity
-contract DigitalIdentity {
-    // ... (structs, state variables, events, modifiers, functions) ...
-}
-*   **Description: The contract DigitalIdentity { ... } block encapsulates all
-    the state, logic, and interface definitions for the digital identity system.
-
+    ```solidity
+    contract DigitalIdentity {
+        // Contract body
+    }
+    ```
+    *   **Purpose:** Encapsulates all state and functions for the digital identity system.
 
 3.4. Data Structures
--------------------------
-      
-3.4.1. `Identity` Struct
-```solidity
-struct Identity {
-    address owner;        // The Ethereum address owning this identity
-    string name;          // The name associated with the identity
-    string email;         // The email associated with the identity
-    // Future fields could include profilePictureCID, social links, etc.
-    bool isRegistered;    // Flag indicating if this identity slot is active
-}
-```
-*   **3.4.1.1. Purpose:** Defines a custom data type to represent a single user's
-    digital identity. It groups related pieces of information (owner's
-    address, name, email, and registration status) into a single, manageable
-    unit.
-*   **3.4.1.2. Fields:**
-    *   `owner (address)`: Stores the Ethereum address of the user who owns
-      this identity. This serves as the primary key linking the identity to a
-      user and is used for ownership checks.
-    *   `name (string)`: Stores the user's registered name as a string.
-    *   `email (string)`: Stores the user's registered email address as a
-      string.
-    *   `isRegistered (bool)`: A boolean flag. `true` indicates that an
-      identity has been successfully registered and is considered active for
-      the associated `owner` address. `false` (the default for uninitialized
-      boolean struct members) indicates no active registration or that the
-      identity slot has not been formally utilized.
+---------------------
+    3.4.1. `Identity` Struct
+        ```solidity
+        struct Identity {
+            address owner;
+            string name;
+            string email;
+            bool isRegistered;
+        }
+        ```
+        *   **Purpose:** Defines the schema for storing a user's identity.
+        *   **Fields:**
+            *   `owner (address)`: The Ethereum address of the identity holder.
+            *   `name (string)`: The user's registered name.
+            *   `email (string)`: The user's registered email.
+            *   `isRegistered (bool)`: Flag indicating if an identity is active for the owner.
+
+3.5. State Variables
+---------------------
+    3.5.1. `identities` Mapping
+        ```solidity
+        mapping(address => Identity) public identities;
+        ```
+        *   **Purpose:** The primary storage for all registered identities.
+        *   **Behavior:** Maps an Ethereum address (key) to its `Identity` struct (value).
+        *   **Getter:** `public` visibility auto-generates a getter function `identities(address)` to retrieve an `Identity` struct.
+
+3.6. Events
+------------
+    3.6.1. `IdentityRegistered` Event
+        ```solidity
+        event IdentityRegistered(
+            address indexed owner,
+            string name,
+            string email
+        );
+        ```
+        *   **Purpose:** Emitted when `registerIdentity` is successfully called.
+        *   **Parameters:** `owner` (indexed), `name`, `email`.
+
+    3.6.2. `IdentityUpdated` Event
+        ```solidity
+        event IdentityUpdated(
+            address indexed owner,
+            string newName,
+            string newEmail
+        );
+        ```
+        *   **Purpose:** Emitted when `updateIdentity` is successfully called.
+        *   **Parameters:** `owner` (indexed), `newName`, `newEmail`.
+
+3.7. Modifiers
+---------------
+    3.7.1. `notAlreadyRegistered` Modifier
+        ```solidity
+        modifier notAlreadyRegistered() {
+            require(!identities[msg.sender].isRegistered, "Identity: Address already registered.");
+            _;
+        }
+        ```
+        *   **Purpose:** Prevents an already registered address from calling the modified function.
+        *   **Check:** `identities[msg.sender].isRegistered` must be `false`.
+
+    3.7.2. `isRegistered` Modifier
+        ```solidity
+        modifier isRegistered() {
+            require(identities[msg.sender].isRegistered, "Identity: Address not registered.");
+            _;
+        }
+        ```
+        *   **Purpose:** Ensures only registered addresses can call the modified function.
+        *   **Check:** `identities[msg.sender].isRegistered` must be `true`.
+
+3.8. Functions (Public Interface)
+----------------------------------
+    3.8.1. `registerIdentity(string memory _name, string memory _email)`
+        ```solidity
+        function registerIdentity(string memory _name, string memory _email)
+            public
+            notAlreadyRegistered
+        {
+            identities[msg.sender] = Identity({
+                owner: msg.sender,
+                name: _name,
+                email: _email,
+                isRegistered: true
+            });
+            emit IdentityRegistered(msg.sender, _name, _email);
+        }
+        ```
+        *   **Purpose:** Allows `msg.sender` to register their identity.
+        *   **Modifiers:** `notAlreadyRegistered`.
+        *   **Action:** Creates and stores a new `Identity` struct for `msg.sender`; emits `IdentityRegistered`.
+        *   **State Change:** Yes (writes to storage).
+
+    3.8.2. `updateIdentity(string memory _newName, string memory _newEmail)`
+        ```solidity
+        function updateIdentity(string memory _newName, string memory _newEmail)
+            public
+            isRegistered
+        {
+            identities[msg.sender].name = _newName;
+            identities[msg.sender].email = _newEmail;
+            emit IdentityUpdated(msg.sender, _newName, _newEmail);
+        }
+        ```
+        *   **Purpose:** Allows `msg.sender` to update their existing identity.
+        *   **Modifiers:** `isRegistered`.
+        *   **Action:** Updates `name` and `email` for `msg.sender`'s identity; emits `IdentityUpdated`.
+        *   **State Change:** Yes.
+
+    3.8.3. `getIdentity(address _owner)`
+        ```solidity
+        function getIdentity(address _owner)
+            public
+            view
+            returns (
+                string memory name,
+                string memory email,
+                bool isRegistered_
+            )
+        {
+            Identity storage id = identities[_owner];
+            return (id.name, id.email, id.isRegistered);
+        }
+        ```
+        *   **Purpose:** Retrieves identity details for `_owner`.
+        *   **Returns:** `name`, `email`, `isRegistered_` status.
+        *   **State Change:** No (`view` function).
+
+    3.8.4. `isIdentityRegistered(address _owner)`
+        ```solidity
+        function isIdentityRegistered(address _owner) public view returns (bool) {
+            return identities[_owner].isRegistered;
+        }
+        ```
+        *   **Purpose:** Checks if an identity is registered for `_owner`.
+        *   **Returns:** `bool` (true if registered, false otherwise).
+        *   **State Change:** No (`view` function).
 
     
     
