@@ -289,6 +289,7 @@ component diagram would be inserted.)
     ```solidity
     pragma solidity ^0.8.18;
     ```
+    
     *   **Description:** Specifies the Solidity compiler version(s) compatible with
         this contract code. The caret `^` indicates that the contract can be
         compiled with version 0.8.18 and any subsequent patch versions (e.g.,
