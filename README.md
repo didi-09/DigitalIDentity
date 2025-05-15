@@ -262,5 +262,79 @@ component diagram would be inserted.)
         address.
     7.  Truffle records the deployment and updates the artifact JSON file in
         `build/contracts/` with the deployed address on that network.
+--------------------------------------------------------------------------------
+3. SMART CONTRACT (`DigitalIdentity.sol`) DEEP DIVE
+--------------------------------------------------------------------------------
 
+3.1. File Location and Purpose
+-------------------------------
+*   **File Path:** `truffle-digital-identity/contracts/DigitalIdentity.sol`
+*   **Purpose:** This Solidity smart contract serves as the core backend logic
+    for the Digital Identity DApp. It is responsible for securely storing and
+    managing user identity data (name and email) on the blockchain, associating
+    it with unique Ethereum addresses. It defines the rules and interfaces for
+    registering, updating, and retrieving these identities.
+
+3.2. Compiler Directives
+-------------------------
+    3.2.1. SPDX License Identifier
+    ```solidity
+    // SPDX-License-Identifier: MIT
+    ```
+    *   **Description:** Declares the open-source license under which the contract's
+        source code is distributed. `MIT` is a common and permissive license.
+        This is a best practice for transparency and legal clarity.
+
+    3.2.2. Pragma Version
+    ```solidity
+    pragma solidity ^0.8.18;
+    ```
+    *   **Description:** Specifies the Solidity compiler version(s) compatible with
+        this contract code. The caret `^` indicates that the contract can be
+        compiled with version 0.8.18 and any subsequent patch versions (e.g.,
+        0.8.19) but not with breaking changes introduced in version 0.9.0 or
+        higher. This ensures code stability and prevents compilation errors due
+        to compiler updates.
+
+3.3. Contract Definition
+-------------------------
+```solidity
+contract DigitalIdentity {
+    // ... (structs, state variables, events, modifiers, functions) ...
+}
+*   **Description: The contract DigitalIdentity { ... } block encapsulates all
+    the state, logic, and interface definitions for the digital identity system.
+
+
+3.4. Data Structures
+-------------------------
+      
+3.4.1. `Identity` Struct
+```solidity
+struct Identity {
+    address owner;        // The Ethereum address owning this identity
+    string name;          // The name associated with the identity
+    string email;         // The email associated with the identity
+    // Future fields could include profilePictureCID, social links, etc.
+    bool isRegistered;    // Flag indicating if this identity slot is active
+}
+```
+*   **3.4.1.1. Purpose:** Defines a custom data type to represent a single user's
+    digital identity. It groups related pieces of information (owner's
+    address, name, email, and registration status) into a single, manageable
+    unit.
+*   **3.4.1.2. Fields:**
+    *   `owner (address)`: Stores the Ethereum address of the user who owns
+      this identity. This serves as the primary key linking the identity to a
+      user and is used for ownership checks.
+    *   `name (string)`: Stores the user's registered name as a string.
+    *   `email (string)`: Stores the user's registered email address as a
+      string.
+    *   `isRegistered (bool)`: A boolean flag. `true` indicates that an
+      identity has been successfully registered and is considered active for
+      the associated `owner` address. `false` (the default for uninitialized
+      boolean struct members) indicates no active registration or that the
+      identity slot has not been formally utilized.
+
+    
     
