@@ -435,5 +435,101 @@ component diagram would be inserted.)
         *   **Returns:** `bool` (true if registered, false otherwise).
         *   **State Change:** No (`view` function).
 
+
+--------------------------------------------------------------------------------
+4. TRUFFLE PROJECT SETUP & CONFIGURATION
+--------------------------------------------------------------------------------
+
+4.1. Overview of Truffle Suite
+-------------------------------
+*   **Purpose:** Truffle is a development environment, testing framework, and asset
+    pipeline for Ethereum smart contracts. It simplifies compilation, deployment,
+    and testing.
+*   **Role in Project:** Used to manage the `DigitalIdentity.sol` smart contract's
+    lifecycle.
+
+4.2. Project Initialization and Directory Structure
+----------------------------------------------------
+*   **Initialization Command:** `truffle init` (executed in a new project folder, e.g., `truffle-digital-identity`).
+*   **Standard Directory Layout:**
+    `truffle-digital-identity/`
+    ├── `build/contracts/`          ► Stores compiled contract artifacts (JSON: ABI, bytecode, etc.).
+    │   └── `DigitalIdentity.json`
+    ├── `contracts/`                ► Contains Solidity source files.
+    │   └── `DigitalIdentity.sol`
+    ├── `migrations/`               ► Holds JavaScript deployment scripts.
+    │   ├── `1_initial_migration.js`  (Optional, Truffle's default)
+    │   └── `2_deploy_digital_identity.js` (Custom script for DigitalIdentity)
+    ├── `test/`                     ► For smart contract test files.
+    └── `truffle-config.js`         ► Main Truffle project configuration file.
+
+4.3. Truffle Configuration (`truffle-config.js`)
+-------------------------------------------------
+*   **Purpose:** Configures network connections, compiler settings, and other
+    project options for Truffle.
+*   **Key Sections:**
+    *   **`networks` Object:** Defines connection parameters for different Ethereum
+        blockchains.
+        *   **`development` Network (Example for Ganache):**
+            ```javascript
+            development: {
+              host: "127.0.0.1",       // IP for Ganache
+              port: 7545,              // Port for Ganache UI (default: 7545, CLI: 8545). MUST MATCH.
+              network_id: "*",         // Matches any network ID. Can be specific (e.g., 5777 or 1337).
+            }
+            ```
+            *   `host`: IP address of the Ganache RPC server.
+            *   `port`: Port number of the Ganache RPC server.
+            *   `network_id`: Identifier of the Ganache instance.
+
+    *   **`compilers.solc` Object:** Configures the Solidity compiler.
+        ```javascript
+        compilers: {
+          solc: {
+            version: "0.8.18",      // Solidity compiler version. MUST MATCH PRAGMA.
+            settings: {
+              optimizer: {
+                enabled: false,   // true for production (reduces gas)
+                runs: 200
+              },
+            }
+          }
+        }
+        ```
+        *   `version`: Specifies the `solc` version.
+        *   `settings.optimizer`: Configures bytecode optimization (recommended for
+            production).
+
+4.4. Deployment (Migration) Scripts
+------------------------------------
+*   **Purpose:** JavaScript files in the `migrations/` directory that automate the
+    deployment of smart contracts. Executed in numerical order.
+*   **Example Script (`migrations/2_deploy_digital_identity.js`):**
+    ```javascript
+    const DigitalIdentity = artifacts.require("DigitalIdentity");
+
+    module.exports = function (deployer, network, accounts) {
+      deployer.deploy(DigitalIdentity)
+        .then(() => {
+          console.log("\n🚀 DigitalIdentity Contract Deployed Successfully!");
+          console.log("   Network         : " + network);
+          console.log("   Contract Address: " + DigitalIdentity.address);
+          console.log("   Deployed By     : " + accounts[0] + "\n");
+        })
+        .catch(error => {
+          console.error("🚨 Deployment Failed:", error);
+        });
+    };
+    ```
+    *   **`artifacts.require("DigitalIdentity")`**: Loads the contract abstraction
+        (ABI, bytecode).
+    *   **`module.exports = function (deployer, network, accounts)`**: Standard
+        migration function signature. Truffle injects `deployer` (for deployment
+        actions), `network` name, and available `accounts`.
+    *   **`deployer.deploy(DigitalIdentity)`**: Instructs Truffle to deploy the
+        contract. Returns a Promise.
+    *   **`.then(...)`**: Executes after successful deployment, typically used for
+        logging the contract address.
+    *   **`.catch(...)`**: Handles deployment errors.
     
     
