@@ -9765,12 +9765,12 @@
     "1337": {
       "events": {},
       "links": {},
-      "address": "0x7696Cc1dD62F32dCe1898bC9A81a45eB96e8BDD3",
-      "transactionHash": "0x935236738c30a5f9a5ab3ecec85aef9980201656e6106d095840d23fcd15977b"
+      "address": "0x2a53e3679387DCd17dd62a582898F229198B393a",
+      "transactionHash": "0x4dba697aa1eef97f05f133e8198ce9c148ad91a8ee79f38b0c10ad6e47992c41"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2025-05-16T01:30:33.753Z",
+  "updatedAt": "2025-05-16T12:32:49.831Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
