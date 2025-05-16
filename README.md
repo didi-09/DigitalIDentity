@@ -81,7 +81,16 @@ The project utilizes the following technologies:
 
 2.1. System Components Diagram
 -----------------------------
-(Open img.jpg for the diagram)
+
+```mermaid
+graph LR
+    UserBrowser["User's Browser (UI)"] -- Interacts --> FrontendApp["Frontend (Vite, Ethers.js)"];
+    FrontendApp -- Wallet Ops --> MetaMask["MetaMask Extension"];
+    MetaMask -- Signs/Sends Tx --> Ganache["Ganache (Local Blockchain)"];
+    FrontendApp -- RPC Calls (Read Data) --> Ganache;
+    Ganache -- Hosts --> SmartContract["DigitalIdentity.sol (Smart Contract)"];
+    Truffle["Truffle Suite"] -- Compile/Deploy --> SmartContract;
+```
 
 ### 2.2. Detailed Component Description
 
