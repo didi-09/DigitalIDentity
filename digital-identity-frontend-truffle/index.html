@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Identity DApp (Truffle)</title>
+    <!-- Google Font (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Link to our new CSS file -->
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1>Digital Identity Portal</h1>
+            <div class="wallet-info">
+                <button id="connectWalletBtn" class="btn btn-primary">Connect Wallet</button>
+                <p>Account: <span id="accountAddress">Not Connected</span></p>
+            </div>
+        </header>
+
+        <main class="app-main">
+            <section class="card contract-status-card">
+                <h2>Contract Details</h2>
+                <p>Address: <span id="contractAddressDisplay">Loading...</span></p>
+                <p>Target Network ID: <span id="networkIdDisplay">Checking...</span></p>
+            </section>
+
+            <div class="content-grid">
+                <section class="card identity-action-card">
+                    <h2>Register Identity</h2>
+                    <div class="form-group">
+                        <label for="regName">Full Name</label>
+                        <input type="text" id="regName" placeholder="e.g., Jane Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">Email Address</label>
+                        <input type="email" id="regEmail" placeholder="e.g., jane.doe@example.com">
+                    </div>
+                    <button id="registerBtn" class="btn btn-success btn-block">Register</button>
+                </section>
+
+                <section class="card identity-action-card">
+                    <h2>Update My Identity</h2>
+                    <div class="form-group">
+                        <label for="updateName">New Full Name</label>
+                        <input type="text" id="updateName" placeholder="Your new name">
+                    </div>
+                    <div class="form-group">
+                        <label for="updateEmail">New Email Address</label>
+                        <input type="email" id="updateEmail" placeholder="Your new email">
+                    </div>
+                    <button id="updateBtn" class="btn btn-warning btn-block">Update Identity</button>
+                </section>
+
+                <section class="card identity-action-card full-width-card">
+                    <h2>View Identity</h2>
+                    <div class="form-group">
+                        <label for="viewAddress">Enter Ethereum Address to View</label>
+                        <input type="text" id="viewAddress" placeholder="0x...">
+                    </div>
+                    <button id="viewIdentityBtn" class="btn btn-info btn-block">View Identity</button>
+                    <div id="identityInfo" class="info-box">
+                        <p>Identity details will appear here.</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="app-footer">
+            <div id="status" class="status-message">Status messages will appear here.</div>
+            <div id="errorLog" class="error-message" style="display:none;">Error messages will appear here.</div>
+        </footer>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
