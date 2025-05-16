@@ -900,7 +900,7 @@ configure MetaMask, and run the frontend application to interact with the DApp.
     3.  Locate the `TARGET_NETWORK_ID` constant. Ensure its value matches the
         **Network ID (Chain ID)** of your running Ganache instance.
         ```javascript
-        const TARGET_NETWORK_ID = "5777"; // e.g., 5777 for Ganache UI, 1337 for CLI. MATCH YOURS.
+        const TARGET_NETWORK_ID = "1337"; // e.g., 5777 for Ganache UI, 1337 for CLI. MATCH YOURS.
         ```
 
 7.4. Configuring MetaMask

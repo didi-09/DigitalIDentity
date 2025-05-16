@@ -1,1 +1,14 @@
 node_modules
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+digital-identity-frontend-truffle/node_modules
+digital-identity-frontend-truffle/.env
+**/node_modules/
+**/node_modules
+node_modules/*
+
+
+
