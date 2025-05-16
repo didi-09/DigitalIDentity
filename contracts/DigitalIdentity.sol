@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: MIT
-pragma solidity ^0.8.18; // Ensure this matches your Truffle compiler settings
+
+pragma solidity ^0.8.18; 
 
 contract DigitalIdentity {
     struct Identity {
