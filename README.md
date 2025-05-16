@@ -1,7 +1,7 @@
 # Project Documentation: Decentralized Digital Identity Management System
 
 **Version:** 1.1
-**Date:** May 16, 2024
+**Date:** May 16, 2025
 **Author(s):** Abdelrahman Ayman, Abdelrahman Elkady, Youssef Bayoumy, Youssef Nader, Marwan Hamdy, Marzie Micheal, Abdelrahman Wael.
 **Repository:** `https://github.com/didi-09/DigitalIDentity.git`
 
