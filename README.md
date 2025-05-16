@@ -81,34 +81,7 @@ The project utilizes the following technologies:
 
 2.1. System Components Diagram
 -----------------------------
-(While a visual diagram would be ideal here, this textual description outlines
-the components and their interactions. In a formal document, a flowchart or
-component diagram would be inserted.)
-
-   +-----------------+      +-----------------+      +----------------------+
-   |  User's Browser |----->|    Frontend     |<---->|  MetaMask Extension  |
-   | (HTML/CSS/JS)   |      | (Vite, Ethers.js)|      | (Wallet, Signer)     |
-   +-----------------+      +-----------------+      +----------+-----------+
-                                    ^                             |
-                                    | (RPC Calls)                 | (Signed Tx)
-                                    |                             |
-                                    v                             v
-                             +-------------------------------------+
-                             |    Ganache Local Blockchain         |
-                             | (Ethereum Node, EVM)                |
-                             |      +--------------------------+   |
-                             |      | DigitalIdentity Contract |   |
-                             |      | (Solidity: State, Logic) |   |
-                             |      +--------------------------+   |
-                             +-------------------------------------+
-                                    ^
-                                    | (Deploy, Interact via CLI)
-                                    |
-                             +-----------------+
-                             | Truffle Suite   |
-                             | (Compile,Migrate|
-                             | Test)           |
-                             +-----------------+
+(Open img.jpg for the diagram)
 
 ### 2.2. Detailed Component Description
 
