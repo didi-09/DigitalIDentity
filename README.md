@@ -412,7 +412,6 @@ graph LR
     ├── truffle-config.js                 # Truffle: Main configuration file
     └── README.md                         # This file
     ```
-    *(Note: The `digital-identity-dapp-main` folder seen in your `ls` output is not explicitly part of this core DApp structure unless it serves a specific documented purpose. If it's a remnant or a different project, it might not need to be in this structural overview for *this* DApp's README.)*
 
     *   **4.2.1. Key Directories & Files Explained (within `my-truffle-digital-identity/`):**
         *   **`contracts/`**: Contains the Solidity source code for the smart contract(s), primarily `DigitalIdentity.sol`.
